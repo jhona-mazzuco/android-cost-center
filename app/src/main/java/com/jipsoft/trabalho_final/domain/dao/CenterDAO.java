@@ -53,7 +53,7 @@ public class CenterDAO {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private static List<Center> findQuery(Integer ID_USER, Integer ID) {
-        StringBuilder sqlBuilder = new StringBuilder(" SELECT id, name, user_id ");
+        StringBuilder sqlBuilder = new StringBuilder(" SELECT id, name, user_id FROM centers ");
 
         List<String> conditions = new ArrayList<>();
         if (ID != null) {
@@ -68,7 +68,6 @@ public class CenterDAO {
             sqlBuilder.append(" WHERE " + String.join(" AND ", conditions));
         }
 
-        sqlBuilder.append(" FROM centers ");
         Cursor cursor = database.rawQuery(sqlBuilder.toString(), null);
         List<Center> centers = new ArrayList<>();
 

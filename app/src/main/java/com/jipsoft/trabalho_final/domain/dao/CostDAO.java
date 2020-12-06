@@ -56,7 +56,7 @@ public class CostDAO {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private static List<Cost> findQuery(Integer ID_CENTER, Integer ID) {
-        StringBuilder sqlBuilder = new StringBuilder(" SELECT id, name, price ");
+        StringBuilder sqlBuilder = new StringBuilder(" SELECT id, name, price FROM costs ");
 
         List<String> conditions = new ArrayList<>();
         if (ID != null) {
@@ -71,7 +71,6 @@ public class CostDAO {
             sqlBuilder.append(" WHERE " + String.join(" AND ", conditions));
         }
 
-        sqlBuilder.append(" FROM costs ");
         Cursor cursor = database.rawQuery(sqlBuilder.toString(), null);
         List<Cost> costs = new ArrayList<>();
 
