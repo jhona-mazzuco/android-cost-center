@@ -1,20 +1,24 @@
-package com.jipsoft.trabalho_final;
+package com.jipsoft.trabalho_final.view;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.jipsoft.trabalho_final.R;
 import com.jipsoft.trabalho_final.core.DBConnection;
 import com.jipsoft.trabalho_final.domain.dao.CenterDAO;
 import com.jipsoft.trabalho_final.domain.dao.CostDAO;
 import com.jipsoft.trabalho_final.domain.dao.UserDAO;
 import com.jipsoft.trabalho_final.domain.entity.User;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends AppCompatActivity {
 
     EditText loginEditText;
@@ -26,10 +30,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initializeComponents();
+        initializeDatabase();
+    }
+
+    private void initializeComponents() {
         loginEditText = findViewById(R.id.login);
         passwordEditText = findViewById(R.id.password);
-
-        initializeDatabase();
     }
 
     @Override
@@ -44,13 +51,12 @@ public class MainActivity extends AppCompatActivity {
     private void initializeDatabase() {
         try {
             database = this.openOrCreateDatabase(DBConnection.DB_NAME, MODE_PRIVATE, null);
-            DBConnection connection = new DBConnection(database);
+            new DBConnection(database);
 
             UserDAO.createTable();
             CenterDAO.createTable();
             CostDAO.createTable();
         } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Erro ao conectar no banco de dados!", Toast.LENGTH_SHORT);
             finish();
         }
     }
@@ -64,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void signIn(User user, String password) {
         if (!user.getPassword().equals(password)) {
-            Toast.makeText(getApplicationContext(), "Senha inválida!", Toast.LENGTH_SHORT).show();
             return;
         }
 

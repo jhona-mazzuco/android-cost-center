@@ -14,6 +14,7 @@ import com.jipsoft.trabalho_final.domain.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class CostDAO {
 
     private static SQLiteDatabase database = DBConnection.getInstace();
@@ -39,12 +40,10 @@ public class CostDAO {
         database.execSQL(sql);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public static List<Cost> find(int idCenter) {
         return findQuery(idCenter, null);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public static Cost find(int idCenter, int idCost) {
         List<Cost> costs = findQuery(idCenter, idCost);
         if (costs.size() > 0) {
@@ -54,7 +53,6 @@ public class CostDAO {
         return null;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private static List<Cost> findQuery(Integer ID_CENTER, Integer ID) {
         StringBuilder sqlBuilder = new StringBuilder(" SELECT id, name, price FROM costs ");
 
@@ -85,7 +83,7 @@ public class CostDAO {
                 int centerId = cursor.getInt(iCenter);
                 String name = cursor.getString(iName);
                 Double price = cursor.getDouble(iPrice);
-                Center center = CenterDAO.find(null, centerId);
+                Center center = CenterDAO.findById(centerId);
                 Cost cost = new Cost(id, name, price, center);
                 costs.add(cost);
             }

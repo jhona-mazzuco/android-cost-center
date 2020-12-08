@@ -13,6 +13,7 @@ import com.jipsoft.trabalho_final.domain.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class CenterDAO {
 
     private static SQLiteDatabase database = DBConnection.getInstace();
@@ -36,14 +37,12 @@ public class CenterDAO {
         database.execSQL(sql);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public static List<Center> find(int idUser) {
         return findQuery(idUser, null);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public static Center find(Integer idUser, Integer idCenter) {
-        List<Center> centers = findQuery(idUser, idCenter);
+    public static Center findById(int idCenter) {
+        List<Center> centers = findQuery(null, idCenter);
         if (centers.size() > 0) {
             return centers.get(0);
         }
@@ -51,7 +50,6 @@ public class CenterDAO {
         return null;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private static List<Center> findQuery(Integer ID_USER, Integer ID) {
         StringBuilder sqlBuilder = new StringBuilder(" SELECT id, name, user_id FROM centers ");
 
@@ -92,7 +90,7 @@ public class CenterDAO {
     public static void update(Center center) {
         String sql = new StringBuilder()
                 .append(" UPDATE centers ")
-                .append(" SET name = " + center.getName())
+                .append(" SET name = '" + center.getName() + "'")
                 .append(" WHERE id = " + center.getId())
                 .toString();
         database.execSQL(sql);
