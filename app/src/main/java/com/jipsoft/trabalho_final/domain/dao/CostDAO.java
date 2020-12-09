@@ -1,25 +1,25 @@
 package com.jipsoft.trabalho_final.domain.dao;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import com.jipsoft.trabalho_final.core.DBConnection;
 import com.jipsoft.trabalho_final.domain.entity.Center;
 import com.jipsoft.trabalho_final.domain.entity.Cost;
-import com.jipsoft.trabalho_final.domain.entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-public class CostDAO {
+public class CostDAO extends BaseDAO<CenterDAO> implements BasicCrudMethod<Cost, Integer, Integer> {
 
-    private static SQLiteDatabase database = DBConnection.getInstace();
+    public CostDAO() {
+        super(new CenterDAO());
+    }
 
-    public static void createTable() {
+    @Override
+    public void createTable() {
         String sql = new StringBuilder()
                 .append(" CREATE TABLE IF NOT EXISTS costs (               ")
                 .append("    id INTEGER PRIMARY KEY,                       ")
@@ -32,20 +32,23 @@ public class CostDAO {
         database.execSQL(sql);
     }
 
-    public static void create(Cost cost) {
+    @Override
+    public void create(Cost entity) {
         String sql = " INSERT INTO costs (name, price, center_id) VALUES (\"$1\", \"$2\", \"$3\") "
-                .replace("$1", cost.getName())
-                .replace("$2", String.valueOf(cost.getPrice()))
-                .replace("$3", String.valueOf(cost.getCenter().getId()));
+                .replace("$1", entity.getName())
+                .replace("$2", String.valueOf(entity.getPrice()))
+                .replace("$3", String.valueOf(entity.getCenter().getId()));
         database.execSQL(sql);
     }
 
-    public static List<Cost> find(int idCenter) {
-        return findQuery(idCenter, null);
+    @Override
+    public List<Cost> find(Integer id) {
+        return findQuery(id, null);
     }
 
-    public static Cost find(int idCenter, int idCost) {
-        List<Cost> costs = findQuery(idCenter, idCost);
+    @Override
+    public Cost findById(Integer id) {
+        List<Cost> costs = findQuery(null, id);
         if (costs.size() > 0) {
             return costs.get(0);
         }
@@ -53,8 +56,9 @@ public class CostDAO {
         return null;
     }
 
-    private static List<Cost> findQuery(Integer ID_CENTER, Integer ID) {
-        StringBuilder sqlBuilder = new StringBuilder(" SELECT id, name, price FROM costs ");
+    @Override
+    public List<Cost> findQuery(Integer ID_CENTER, Integer ID) {
+        StringBuilder sqlBuilder = new StringBuilder(" SELECT id, name, price, center_id FROM costs ");
 
         List<String> conditions = new ArrayList<>();
         if (ID != null) {
@@ -83,7 +87,7 @@ public class CostDAO {
                 int centerId = cursor.getInt(iCenter);
                 String name = cursor.getString(iName);
                 Double price = cursor.getDouble(iPrice);
-                Center center = CenterDAO.findById(centerId);
+                Center center = relationshipRepository.findById(centerId);
                 Cost cost = new Cost(id, name, price, center);
                 costs.add(cost);
             }
@@ -92,17 +96,19 @@ public class CostDAO {
         return costs;
     }
 
-    public static void update(Cost cost) {
+    @Override
+    public void update(Cost entity) {
         String sql = new StringBuilder()
                 .append(" UPDATE costs ")
-                .append(" SET name = " + cost.getName())
-                .append(" SET price = " + cost.getPrice())
-                .append(" WHERE id = " + cost.getId())
+                .append(" SET name = '" + entity.getName() + "',")
+                .append(" price = " + entity.getPrice())
+                .append(" WHERE id = " + entity.getId())
                 .toString();
         database.execSQL(sql);
     }
 
-    public static void remove(int id) {
+    @Override
+    public void remove(Integer id) {
         database.execSQL("DELETE FROM costs WHERE id = " + id);
     }
 }

@@ -16,6 +16,7 @@ import com.jipsoft.trabalho_final.core.DBConnection;
 import com.jipsoft.trabalho_final.domain.dao.CenterDAO;
 import com.jipsoft.trabalho_final.domain.dao.CostDAO;
 import com.jipsoft.trabalho_final.domain.dao.UserDAO;
+import com.jipsoft.trabalho_final.domain.entity.Center;
 import com.jipsoft.trabalho_final.domain.entity.User;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -54,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
             new DBConnection(database);
 
             UserDAO.createTable();
-            CenterDAO.createTable();
-            CostDAO.createTable();
+            new CenterDAO().createTable();
+            new CostDAO().createTable();
         } catch (Exception e) {
             finish();
         }

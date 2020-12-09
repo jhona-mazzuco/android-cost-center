@@ -1,8 +1,6 @@
 package com.jipsoft.trabalho_final.domain.entity;
 
-public class User {
-
-    int id;
+public class User extends BaseEntity {
 
     String login;
 
@@ -17,10 +15,6 @@ public class User {
     public User(String login, String password) {
         this.login = login;
         this.password = password;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getLogin() {

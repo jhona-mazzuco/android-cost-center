@@ -1,22 +1,16 @@
 package com.jipsoft.trabalho_final.view;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.jipsoft.trabalho_final.R;
 import com.jipsoft.trabalho_final.adapter.CenterAdapter;
-import com.jipsoft.trabalho_final.core.DBConnection;
 import com.jipsoft.trabalho_final.domain.dao.CenterDAO;
 import com.jipsoft.trabalho_final.domain.dao.UserDAO;
 import com.jipsoft.trabalho_final.domain.entity.Center;
@@ -25,12 +19,9 @@ import com.jipsoft.trabalho_final.domain.entity.User;
 import java.util.List;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-public class CenterActivity extends AppCompatActivity {
+public class CenterActivity extends BaseActivity<CenterDAO> implements BasicActivityMethod {
 
-    SQLiteDatabase database;
-    User loggedIn;
-    Button createBtn;
-    ListView listView;
+    private User loggedIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,27 +29,22 @@ public class CenterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_center);
 
         initializeComponents();
-        initializeDatabase();
+        initializeDatabase(new CenterDAO());
         getLoggedIn();
         loadData();
     }
 
-    private void initializeComponents() {
+    @Override
+    public void initializeComponents() {
         createBtn = findViewById(R.id.center_btn);
         listView = findViewById(R.id.center_list);
     }
 
-    private void initializeDatabase() {
-        database = DBConnection.getInstace();
-    }
-
     @Override
-    protected void onDestroy() {
-        if (this.database != null) {
-            this.database.close();
-        }
-
-        super.onDestroy();
+    public void loadData() {
+        List<Center> centers = repository.find(loggedIn.getId());
+        ListAdapter adapter = new CenterAdapter(this, centers);
+        listView.setAdapter(adapter);
     }
 
     private void getLoggedIn() {
@@ -66,12 +52,6 @@ public class CenterActivity extends AppCompatActivity {
         if (id > 0) {
             loggedIn = UserDAO.find(id);
         }
-    }
-
-    private void loadData() {
-        List<Center> centers = CenterDAO.find(loggedIn.getId());
-        ListAdapter adapter = new CenterAdapter(this, centers);
-        listView.setAdapter(adapter);
     }
 
     public void onClickNewBtn(View view) {

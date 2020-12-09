@@ -32,10 +32,6 @@ public class UserDAO {
         return database.insert("users", null, contentValues);
     }
 
-    public static List<User> find() {
-        return findQuery(null);
-    }
-
     public static User find(int id) {
         List<User> users = findQuery(id);
         if (users.size() > 0) {
@@ -72,7 +68,7 @@ public class UserDAO {
     }
 
     public static User findByLogin(String LOGIN) {
-        Cursor cursor = database.rawQuery("SELECT id, login, password FROM users WHERE login = '" + LOGIN + "'",null);
+        Cursor cursor = database.rawQuery("SELECT id, login, password FROM users WHERE login = '" + LOGIN + "'", null);
         User user = null;
         if (cursor != null && cursor.getCount() > 0) {
             int iId = cursor.getColumnIndex("id");

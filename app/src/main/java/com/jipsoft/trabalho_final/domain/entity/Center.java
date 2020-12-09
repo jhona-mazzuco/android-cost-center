@@ -1,8 +1,6 @@
 package com.jipsoft.trabalho_final.domain.entity;
 
-public class Center {
-
-    private int id;
+public class Center extends BaseEntity {
 
     private String name;
 
@@ -17,10 +15,6 @@ public class Center {
     public Center(String name, User user) {
         this.name = name;
         this.user = user;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getName() {

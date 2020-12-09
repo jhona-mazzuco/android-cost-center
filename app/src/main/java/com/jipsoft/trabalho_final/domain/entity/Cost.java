@@ -1,8 +1,6 @@
 package com.jipsoft.trabalho_final.domain.entity;
 
-public class Cost {
-
-    private int id;
+public class Cost extends BaseEntity {
 
     private String name;
 
@@ -21,10 +19,6 @@ public class Cost {
         this.name = name;
         this.price = price;
         this.center = center;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getName() {

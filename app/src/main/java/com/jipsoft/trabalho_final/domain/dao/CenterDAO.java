@@ -1,12 +1,10 @@
 package com.jipsoft.trabalho_final.domain.dao;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import com.jipsoft.trabalho_final.core.DBConnection;
 import com.jipsoft.trabalho_final.domain.entity.Center;
 import com.jipsoft.trabalho_final.domain.entity.User;
 
@@ -14,11 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-public class CenterDAO {
+public class CenterDAO extends BaseDAO<UserDAO> implements BasicCrudMethod<Center, Integer, Integer> {
 
-    private static SQLiteDatabase database = DBConnection.getInstace();
+    public CenterDAO() {
+        super(new UserDAO());
+    }
 
-    public static void createTable() {
+    @Override
+    public void createTable() {
         String sql = new StringBuilder()
                 .append(" CREATE TABLE IF NOT EXISTS centers (         ")
                 .append("    id INTEGER PRIMARY KEY,                   ")
@@ -30,19 +31,22 @@ public class CenterDAO {
         database.execSQL(sql);
     }
 
-    public static void create(Center center) {
+    @Override
+    public void create(Center entity) {
         String sql = " INSERT INTO centers (name, user_id) VALUES (\"$1\", \"$2\") "
-                .replace("$1", center.getName())
-                .replace("$2", String.valueOf(center.getUser().getId()));
+                .replace("$1", entity.getName())
+                .replace("$2", String.valueOf(entity.getUser().getId()));
         database.execSQL(sql);
     }
 
-    public static List<Center> find(int idUser) {
-        return findQuery(idUser, null);
+    @Override
+    public List<Center> find(Integer id) {
+        return findQuery(id, null);
     }
 
-    public static Center findById(int idCenter) {
-        List<Center> centers = findQuery(null, idCenter);
+    @Override
+    public Center findById(Integer id) {
+        List<Center> centers = findQuery(null, id);
         if (centers.size() > 0) {
             return centers.get(0);
         }
@@ -50,7 +54,8 @@ public class CenterDAO {
         return null;
     }
 
-    private static List<Center> findQuery(Integer ID_USER, Integer ID) {
+    @Override
+    public List<Center> findQuery(Integer ID_USER, Integer ID) {
         StringBuilder sqlBuilder = new StringBuilder(" SELECT id, name, user_id FROM centers ");
 
         List<String> conditions = new ArrayList<>();
@@ -59,7 +64,7 @@ public class CenterDAO {
         }
 
         if (ID_USER != null) {
-            conditions.add( "user_id = " + ID_USER);
+            conditions.add("user_id = " + ID_USER);
         }
 
         if (conditions.size() > 0) {
@@ -69,7 +74,7 @@ public class CenterDAO {
         Cursor cursor = database.rawQuery(sqlBuilder.toString(), null);
         List<Center> centers = new ArrayList<>();
 
-        if(cursor != null && cursor.getCount() > 0) {
+        if (cursor != null && cursor.getCount() > 0) {
             int iId = cursor.getColumnIndex("id");
             int iName = cursor.getColumnIndex("name");
             int iUser = cursor.getColumnIndex("user_id");
@@ -87,17 +92,18 @@ public class CenterDAO {
         return centers;
     }
 
-    public static void update(Center center) {
+    @Override
+    public void update(Center entity) {
         String sql = new StringBuilder()
                 .append(" UPDATE centers ")
-                .append(" SET name = '" + center.getName() + "'")
-                .append(" WHERE id = " + center.getId())
+                .append(" SET name = '" + entity.getName() + "'")
+                .append(" WHERE id = " + entity.getId())
                 .toString();
         database.execSQL(sql);
     }
 
-    public static void remove(int id) {
-        String sql = "DELETE FROM centers WHERE id = " + id;
-        database.execSQL(sql);
+    @Override
+    public void remove(Integer id) {
+        database.execSQL("DELETE FROM centers WHERE id = " + id);
     }
 }

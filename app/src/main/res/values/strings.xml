@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Cost Center</string>
     <string name="new_cost_center">+ New cost center</string>
+    <string name="new_cost">+ new cost</string>
+    <string name="name">Name:</string>
+    <string name="save">Save</string>
 </resources>
