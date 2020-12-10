@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.MainActivity">
+    tools:context=".domain.activity.MainActivity">
 
     <EditText
         android:id="@+id/login"
@@ -45,7 +45,7 @@
         android:layout_marginTop="42dp"
         android:layout_marginEnd="116dp"
         android:layout_marginRight="116dp"
-        android:onClick="onClickSign"
+        android:onClick="sign"
         android:text="Sign in or sign up"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

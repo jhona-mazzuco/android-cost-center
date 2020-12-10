@@ -19,19 +19,6 @@ public class CenterDAO extends BaseDAO<UserDAO> implements BasicCrudMethod<Cente
     }
 
     @Override
-    public void createTable() {
-        String sql = new StringBuilder()
-                .append(" CREATE TABLE IF NOT EXISTS centers (         ")
-                .append("    id INTEGER PRIMARY KEY,                   ")
-                .append("    name VARCHAR(50),                         ")
-                .append("    user_id INTEGER,                          ")
-                .append("    FOREIGN KEY(user_id) REFERENCES users(id) ")
-                .append(" )                                            ")
-                .toString();
-        database.execSQL(sql);
-    }
-
-    @Override
     public void create(Center entity) {
         String sql = " INSERT INTO centers (name, user_id) VALUES (\"$1\", \"$2\") "
                 .replace("$1", entity.getName())

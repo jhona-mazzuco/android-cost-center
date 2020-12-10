@@ -9,11 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Trabalhofinal">
-        <activity android:name=".view.CostActivity" />
-        <activity android:name=".view.CostCreateActivity" />
-        <activity android:name=".view.CenterCreateActivity" />
-        <activity android:name=".view.CenterActivity" />
-        <activity android:name=".view.MainActivity">
+        <activity android:name=".domain.activity.CostActivity" />
+        <activity android:name=".domain.activity.CostCreateActivity" />
+        <activity android:name=".domain.activity.CenterCreateActivity" />
+        <activity android:name=".domain.activity.CenterActivity" />
+        <activity android:name=".domain.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

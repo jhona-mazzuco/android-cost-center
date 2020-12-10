@@ -4,8 +4,6 @@ import java.util.List;
 
 public interface BasicCrudMethod<T, R, K> {
 
-    void createTable();
-
     void create(T entity);
 
     List<T> find(R id);

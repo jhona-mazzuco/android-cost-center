@@ -41,7 +41,4 @@ public class Cost extends BaseEntity {
         return center;
     }
 
-    public void setCenter(Center center) {
-        this.center = center;
-    }
 }

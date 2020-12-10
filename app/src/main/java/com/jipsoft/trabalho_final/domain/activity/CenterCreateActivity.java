@@ -1,9 +1,10 @@
-package com.jipsoft.trabalho_final.view;
+package com.jipsoft.trabalho_final.domain.activity;
 
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -25,8 +26,8 @@ public class CenterCreateActivity extends BaseActivity<CenterDAO> implements Bas
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_center_create);
 
-        initializeComponents();
         initializeDatabase(new CenterDAO());
+        initializeComponents();
         loadData();
         getLoggedIn();
     }
@@ -45,15 +46,11 @@ public class CenterCreateActivity extends BaseActivity<CenterDAO> implements Bas
         }
     }
 
-    @Override
-    public void create() {
-        repository.create(new Center(editName.getText().toString(), loggedIn));
-    }
-
-    @Override
-    public void update() {
-        center.setName(editName.getText().toString());
-        repository.update(center);
+    private void getLoggedIn() {
+        int id = getIntent().getIntExtra("USER_ID", -1);
+        if (id > 0) {
+            loggedIn = UserDAO.find(id);
+        }
     }
 
     @Override
@@ -70,10 +67,16 @@ public class CenterCreateActivity extends BaseActivity<CenterDAO> implements Bas
         finish();
     }
 
-    private void getLoggedIn() {
-        int id = getIntent().getIntExtra("USER_ID", -1);
-        if (id > 0) {
-            loggedIn = UserDAO.find(id);
-        }
+    @Override
+    public void create() {
+        repository.create(new Center(editName.getText().toString(), loggedIn));
+        Toast.makeText(this, "Cost center created!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void update() {
+        center.setName(editName.getText().toString());
+        repository.update(center);
+        Toast.makeText(this, "Cost center updated!", Toast.LENGTH_SHORT).show();
     }
 }

@@ -1,4 +1,4 @@
-package com.jipsoft.trabalho_final.view;
+package com.jipsoft.trabalho_final.domain.activity;
 
 import android.view.View;
 

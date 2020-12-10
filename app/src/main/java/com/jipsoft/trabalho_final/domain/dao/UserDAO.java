@@ -14,17 +14,6 @@ public class UserDAO {
 
     private static SQLiteDatabase database = DBConnection.getInstace();
 
-    public static void createTable() {
-        String sql = new StringBuilder()
-                .append(" CREATE TABLE IF NOT EXISTS users ( ")
-                .append("     id INTEGER PRIMARY KEY,        ")
-                .append("     login VARCHAR(50),             ")
-                .append("     password VARCHAR(25)           ")
-                .append(" )                                  ")
-                .toString();
-        database.execSQL(sql);
-    }
-
     public static long create(User user) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("login", user.getLogin());
@@ -84,10 +73,5 @@ public class UserDAO {
         }
 
         return user;
-    }
-
-    public static void remove(int id) {
-        String sql = "DELETE FROM users WHERE id = " + id;
-        database.execSQL(sql);
     }
 }

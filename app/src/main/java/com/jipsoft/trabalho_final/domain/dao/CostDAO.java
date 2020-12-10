@@ -19,20 +19,6 @@ public class CostDAO extends BaseDAO<CenterDAO> implements BasicCrudMethod<Cost,
     }
 
     @Override
-    public void createTable() {
-        String sql = new StringBuilder()
-                .append(" CREATE TABLE IF NOT EXISTS costs (               ")
-                .append("    id INTEGER PRIMARY KEY,                       ")
-                .append("    name VARCHAR(50),                             ")
-                .append("    price double,                                 ")
-                .append("    center_id INTEGER,                            ")
-                .append("    FOREIGN KEY(center_id) REFERENCES centers(id) ")
-                .append(" )                                                ")
-                .toString();
-        database.execSQL(sql);
-    }
-
-    @Override
     public void create(Cost entity) {
         String sql = " INSERT INTO costs (name, price, center_id) VALUES (\"$1\", \"$2\", \"$3\") "
                 .replace("$1", entity.getName())

@@ -1,7 +1,9 @@
-package com.jipsoft.trabalho_final.adapter;
+package com.jipsoft.trabalho_final.domain.adapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -16,8 +18,9 @@ import androidx.annotation.RequiresApi;
 
 import com.jipsoft.trabalho_final.R;
 import com.jipsoft.trabalho_final.domain.dao.CostDAO;
+import com.jipsoft.trabalho_final.domain.entity.Center;
 import com.jipsoft.trabalho_final.domain.entity.Cost;
-import com.jipsoft.trabalho_final.view.CostCreateActivity;
+import com.jipsoft.trabalho_final.domain.activity.CostCreateActivity;
 
 import java.util.List;
 
@@ -64,10 +67,19 @@ public class CostAdapter extends BaseAdapter<Cost, CostDAO> implements BasicAdap
     @Override
     public View.OnClickListener remove(int position) {
         return v -> {
-            Cost cost = getItem(position);
-            repository.remove(cost.getId());
-            remove(cost);
-            notifyDataSetChanged();
+            new AlertDialog.Builder(getContext())
+                    .setMessage("Do you want to delete?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Cost cost = getItem(position);
+                            repository.remove(cost.getId());
+                            remove(cost);
+                            notifyDataSetChanged();
+                        }
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
         };
     }
 }

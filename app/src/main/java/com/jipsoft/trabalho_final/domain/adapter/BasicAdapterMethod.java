@@ -1,4 +1,4 @@
-package com.jipsoft.trabalho_final.adapter;
+package com.jipsoft.trabalho_final.domain.adapter;
 
 import android.view.View;
 

@@ -1,4 +1,4 @@
-package com.jipsoft.trabalho_final.view;
+package com.jipsoft.trabalho_final.domain.activity;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,7 +16,6 @@ import com.jipsoft.trabalho_final.core.DBConnection;
 import com.jipsoft.trabalho_final.domain.dao.CenterDAO;
 import com.jipsoft.trabalho_final.domain.dao.CostDAO;
 import com.jipsoft.trabalho_final.domain.dao.UserDAO;
-import com.jipsoft.trabalho_final.domain.entity.Center;
 import com.jipsoft.trabalho_final.domain.entity.User;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -31,13 +30,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initializeComponents();
         initializeDatabase();
+        initializeComponents();
     }
 
-    private void initializeComponents() {
-        loginEditText = findViewById(R.id.login);
-        passwordEditText = findViewById(R.id.password);
+    private void initializeDatabase() {
+        try {
+            database = this.openOrCreateDatabase(DBConnection.DB_NAME, MODE_PRIVATE, null);
+            new DBConnection(database).createTables();
+        } catch (Exception e) {
+            finish();
+        }
     }
 
     @Override
@@ -49,20 +52,12 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void initializeDatabase() {
-        try {
-            database = this.openOrCreateDatabase(DBConnection.DB_NAME, MODE_PRIVATE, null);
-            new DBConnection(database);
-
-            UserDAO.createTable();
-            new CenterDAO().createTable();
-            new CostDAO().createTable();
-        } catch (Exception e) {
-            finish();
-        }
+    private void initializeComponents() {
+        loginEditText = findViewById(R.id.login);
+        passwordEditText = findViewById(R.id.password);
     }
 
-    public void onClickSign(View view) {
+    public void sign(View view) {
         String login = loginEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         User user = UserDAO.findByLogin(login);
@@ -71,18 +66,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void signIn(User user, String password) {
         if (!user.getPassword().equals(password)) {
+            Toast.makeText(this, "Password wrong!", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        Toast.makeText(this, "Sign in success!", Toast.LENGTH_SHORT).show();
         goToCenter(user.getId());
     }
 
     private void signUp(String login, String password) {
         Long id = UserDAO.create(new User(login, password));
-        goToCenter(id);
+        Toast.makeText(this, "User created!", Toast.LENGTH_SHORT).show();
+        goToCenter(id.intValue());
     }
 
-    private void goToCenter(Number id) {
+    private void goToCenter(int id) {
         Intent intent = new Intent(MainActivity.this, CenterActivity.class);
         intent.putExtra("USER_ID", id);
         startActivity(intent);

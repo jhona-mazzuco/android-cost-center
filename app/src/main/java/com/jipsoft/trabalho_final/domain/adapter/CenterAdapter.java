@@ -1,7 +1,9 @@
-package com.jipsoft.trabalho_final.adapter;
+package com.jipsoft.trabalho_final.domain.adapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -17,8 +19,8 @@ import androidx.annotation.RequiresApi;
 import com.jipsoft.trabalho_final.R;
 import com.jipsoft.trabalho_final.domain.dao.CenterDAO;
 import com.jipsoft.trabalho_final.domain.entity.Center;
-import com.jipsoft.trabalho_final.view.CenterCreateActivity;
-import com.jipsoft.trabalho_final.view.CostActivity;
+import com.jipsoft.trabalho_final.domain.activity.CenterCreateActivity;
+import com.jipsoft.trabalho_final.domain.activity.CostActivity;
 
 import java.util.List;
 
@@ -63,10 +65,19 @@ public class CenterAdapter extends BaseAdapter<Center, CenterDAO> implements Bas
     @Override
     public View.OnClickListener remove(int position) {
         return v -> {
-            Center center = getItem(position);
-            repository.remove(center.getId());
-            remove(center);
-            notifyDataSetChanged();
+            new AlertDialog.Builder(getContext())
+                    .setMessage("Do you want to delete?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Center center = getItem(position);
+                            repository.remove(center.getId());
+                            remove(center);
+                            notifyDataSetChanged();
+                        }
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
         };
     }
 

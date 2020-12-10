@@ -1,4 +1,4 @@
-package com.jipsoft.trabalho_final.view;
+package com.jipsoft.trabalho_final.domain.activity;
 
 import android.content.Intent;
 import android.database.DataSetObserver;
@@ -13,15 +13,15 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.jipsoft.trabalho_final.R;
-import com.jipsoft.trabalho_final.adapter.CostAdapter;
+import com.jipsoft.trabalho_final.domain.adapter.CostAdapter;
 import com.jipsoft.trabalho_final.domain.dao.CostDAO;
 import com.jipsoft.trabalho_final.domain.entity.Center;
 import com.jipsoft.trabalho_final.domain.entity.Cost;
 
 import java.util.List;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
-public class CostActivity extends BaseActivity<CostDAO> implements BasicActivityMethod, View.OnUnhandledKeyEventListener {
+@RequiresApi(api = Build.VERSION_CODES.P)
+public class CostActivity extends BaseActivity<CostDAO> implements BasicActivityMethod {
 
     private Center center;
     private TextView totalView;
@@ -31,8 +31,8 @@ public class CostActivity extends BaseActivity<CostDAO> implements BasicActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cost);
 
-        initializeComponents();
         initializeDatabase(new CostDAO());
+        initializeComponents();
         getCenter();
         loadData();
     }
@@ -48,13 +48,7 @@ public class CostActivity extends BaseActivity<CostDAO> implements BasicActivity
     public void loadData() {
         List<Cost> costs = repository.find(center.getId());
         ListAdapter adapter = new CostAdapter(this, costs);
-        adapter.registerDataSetObserver(new DataSetObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                loadData();
-            }
-        });
+        registerObserver(adapter);
         listView.setAdapter(adapter);
         Double sum = Double.valueOf(0);
         for (Cost cost : costs) {
@@ -64,9 +58,19 @@ public class CostActivity extends BaseActivity<CostDAO> implements BasicActivity
         totalView.setText("R$ " + sum.toString());
     }
 
+    private void registerObserver(ListAdapter adapter) {
+        adapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                loadData();
+            }
+        });
+    }
+
     private void getCenter() {
         int id = getIntent().getIntExtra("CENTER_ID", -1);
-        if (id > -1) {
+        if (id > 0) {
             center = repository.getRelationshipRepository().findById(id);
         }
     }
@@ -81,14 +85,5 @@ public class CostActivity extends BaseActivity<CostDAO> implements BasicActivity
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         this.loadData();
-    }
-
-    @Override
-    public boolean onUnhandledKeyEvent(View v, KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_REFRESH) {
-            loadData();
-        }
-
-        return false;
     }
 }

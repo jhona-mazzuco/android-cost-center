@@ -1,9 +1,10 @@
-package com.jipsoft.trabalho_final.view;
+package com.jipsoft.trabalho_final.domain.activity;
 
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -48,18 +49,6 @@ public class CostCreateActivity extends BaseActivity<CostDAO> implements BasicCr
     }
 
     @Override
-    public void create() {
-        repository.create(new Cost(editName.getText().toString(), getTransformedPrice(), center));
-    }
-
-    @Override
-    public void update() {
-        cost.setName(editName.getText().toString());
-        cost.setPrice(getTransformedPrice());
-        repository.update(cost);
-    }
-
-    @Override
     public void save(View view) {
         String name = editName.getText().toString();
         String price = editPrice.getText().toString();
@@ -74,6 +63,20 @@ public class CostCreateActivity extends BaseActivity<CostDAO> implements BasicCr
         }
 
         finish();
+    }
+
+    @Override
+    public void create() {
+        repository.create(new Cost(editName.getText().toString(), getTransformedPrice(), center));
+        Toast.makeText(this, "Cost created!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void update() {
+        cost.setName(editName.getText().toString());
+        cost.setPrice(getTransformedPrice());
+        repository.update(cost);
+        Toast.makeText(this, "Cost updated!", Toast.LENGTH_SHORT).show();
     }
 
     private void getCenter() {
